@@ -17,7 +17,7 @@ interface AoiRepository : JpaRepository<Aoi, Long> {
             AND st_intersects(a.area, b.area)
         """, nativeQuery = true
     )
-    fun findByRegionId(id: Int): List<Aoi>
+    fun findAllByRegionId(id: Int): List<Aoi>
 
     @Query(
         value =

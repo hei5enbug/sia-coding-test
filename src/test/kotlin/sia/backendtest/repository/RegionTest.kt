@@ -18,21 +18,22 @@ internal class RegionTest {
 
     @Test
     fun saveRegion() {
-
-        val pointList = listOf(
-            PointDTO(126.637633, 37.376078),
-            PointDTO(126.632383, 37.379237),
-            PointDTO(126.628187, 37.375380),
-            PointDTO(126.633852, 37.372120),
-            PointDTO(126.637633, 37.376078),
+        val expected = Region(
+            name = "인천시",
+            area = GeometryConverter().convertPolygon(
+                listOf(
+                    PointDTO(126.575759, 37.626045),
+                    PointDTO(126.787484, 37.580330),
+                    PointDTO(126.770138, 37.430966),
+                    PointDTO(126.738636, 37.392667),
+                    PointDTO(126.577265, 37.389092),
+                    PointDTO(126.575759, 37.626045),
+                )
+            )
         )
-        val region = Region(
-            name = "인천대학교",
-            area = GeometryConverter().convertPolygon(pointList)
-        )
-        val savedRegion = regionRepository.save(region)
+        val result = regionRepository.save(expected)
 
-        assertEquals(region.id, savedRegion.id)
+        assertEquals(expected, result)
     }
 
 }

@@ -21,8 +21,8 @@ class RegionServiceImpl(
         return regionRepository.save(region).toIdResponseDto()
     }
 
-    override fun findAoisByRegionId(id: Int): RegionIntersectResponseDTO {
-        val aois = aoiRepository.findByRegionId(id).map { it.toAoiResponseDto() }
+    override fun findByRegionId(id: Int): RegionIntersectResponseDTO {
+        val aois = aoiRepository.findAllByRegionId(id).map { it.toAoiResponseDto() }
         return RegionIntersectResponseDTO(aois)
     }
 

@@ -11,15 +11,18 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import sia.backendtest.dto.*
-import sia.backendtest.service.RegionService
+import sia.backendtest.dto.AoiRequestDTO
+import sia.backendtest.dto.AoiResponseDTO
+import sia.backendtest.dto.IdResponseDTO
+import sia.backendtest.dto.PointDTO
+import sia.backendtest.service.AoiService
 import java.nio.charset.StandardCharsets
 
-@WebMvcTest(RegionController::class)
-internal class RegionControllerTest {
+@WebMvcTest(AoiController::class)
+internal class AoiControllerTest {
 
     @MockBean
-    private lateinit var regionService: RegionService
+    private lateinit var aoiService: AoiService
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -33,23 +36,22 @@ internal class RegionControllerTest {
     }
 
     @Test
-    fun postRegionTest() {
-        val body = RegionRequestDTO(
-            name = "인천시", area = listOf(
-                PointDTO(126.575759, 37.626045),
-                PointDTO(126.787484, 37.580330),
-                PointDTO(126.770138, 37.430966),
-                PointDTO(126.738636, 37.392667),
-                PointDTO(126.577265, 37.389092),
-                PointDTO(126.575759, 37.626045),
+    fun postAoiTest() {
+        val body = AoiRequestDTO(
+            name = "인천대학교", area = listOf(
+                PointDTO(126.637633, 37.376078),
+                PointDTO(126.632383, 37.379237),
+                PointDTO(126.628187, 37.375380),
+                PointDTO(126.633852, 37.372120),
+                PointDTO(126.637633, 37.376078),
             )
         )
 
         val expected = IdResponseDTO(id = 3)
-        given(regionService.insertRegion(any())).willReturn(expected)
+        given(aoiService.insertAoi(any())).willReturn(expected)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/regions").contentType(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.post("/aois").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body))
         ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(
             MockMvcResultMatchers.content().string(
@@ -59,25 +61,24 @@ internal class RegionControllerTest {
     }
 
     @Test
-    fun getRegionIntersectedAoisTest() {
-        val expected = RegionIntersectResponseDTO(
-            listOf(
-                AoiResponseDTO(
-                    id = 1, name = "인천대학교", area = listOf(
-                        PointDTO(126.637633, 37.376078),
-                        PointDTO(126.632383, 37.379237),
-                        PointDTO(126.628187, 37.375380),
-                        PointDTO(126.633852, 37.372120),
-                        PointDTO(126.637633, 37.376078),
-                    )
-                )
+    fun getAoiByPointTest() {
+
+        val lat = 126.3
+        val lon = 37.2
+        val expected = AoiResponseDTO(
+            id = 10, name = "인천대학교", area = listOf(
+                PointDTO(126.637633, 37.376078),
+                PointDTO(126.632383, 37.379237),
+                PointDTO(126.628187, 37.375380),
+                PointDTO(126.633852, 37.372120),
+                PointDTO(126.637633, 37.376078),
             )
         )
-        val regionId = 1
-        given(regionService.findByRegionId(regionId)).willReturn(expected)
+
+        given(aoiService.findNearByPoint(lat, lon)).willReturn(expected)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/regions/${regionId}/aois/intersects")
+            MockMvcRequestBuilders.get("/aois?lat=${lat}&long=${lon}")
                 .accept(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
         )
             .andExpect(MockMvcResultMatchers.status().isOk).andExpect(

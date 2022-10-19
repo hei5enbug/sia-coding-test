@@ -27,23 +27,20 @@ internal class RegionServiceTest {
     @InjectMocks
     private lateinit var regionService: RegionServiceImpl
 
-
     @Test
     internal fun insertRegionTest() {
         val regionRequestDTO = RegionRequestDTO(
-            name = "인천대학교",
-            area = listOf(
-                PointDTO(126.637633, 37.376078),
-                PointDTO(126.632383, 37.379237),
-                PointDTO(126.628187, 37.375380),
-                PointDTO(126.633852, 37.372120),
-                PointDTO(126.637633, 37.376078),
+            name = "인천시", area = listOf(
+                PointDTO(126.575759, 37.626045),
+                PointDTO(126.787484, 37.580330),
+                PointDTO(126.770138, 37.430966),
+                PointDTO(126.738636, 37.392667),
+                PointDTO(126.577265, 37.389092),
+                PointDTO(126.575759, 37.626045),
             )
         )
         val region = Region(
-            id = 5,
-            name = regionRequestDTO.name,
-            area = GeometryConverter().convertPolygon(regionRequestDTO.area)
+            id = 5, name = regionRequestDTO.name, area = GeometryConverter().convertPolygon(regionRequestDTO.area)
         )
 
         given(regionRepository.save(any())).willReturn(region)
@@ -57,7 +54,7 @@ internal class RegionServiceTest {
         val expected = RegionIntersectResponseDTO(
             listOf(
                 AoiResponseDTO(
-                    id = 2, name = "북한산", area = listOf(
+                    id = 2, name = "인천대학교", area = listOf(
                         PointDTO(126.637633, 37.376078),
                         PointDTO(126.632383, 37.379237),
                         PointDTO(126.628187, 37.375380),
@@ -70,9 +67,9 @@ internal class RegionServiceTest {
         val aois = expected.aois.map {
             Aoi(id = it.id, name = it.name, area = GeometryConverter().convertPolygon(it.area))
         }
-        given(aoiRepository.findByRegionId(anyInt())).willReturn(aois)
+        given(aoiRepository.findAllByRegionId(anyInt())).willReturn(aois)
 
-        val result = regionService.findAoisByRegionId(1)
+        val result = regionService.findByRegionId(1)
         assertEquals(expected, result)
     }
 

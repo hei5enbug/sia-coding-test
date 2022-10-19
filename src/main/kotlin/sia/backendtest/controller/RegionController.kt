@@ -16,13 +16,13 @@ class RegionController(
 ) {
 
     @PostMapping("/regions")
-    fun insertRegion(@RequestBody regionRequestDTO: RegionRequestDTO): IdResponseDTO {
+    fun postRegion(@RequestBody regionRequestDTO: RegionRequestDTO): IdResponseDTO {
         return regionService.insertRegion(regionRequestDTO)
     }
 
     @GetMapping("/regions/{id}/aois/intersects")
     fun getRegionIntersectedAois(@PathVariable(name = "id") id: Int): RegionIntersectResponseDTO {
-        return regionService.findAoisByRegionId(id)
+        return regionService.findByRegionId(id)
     }
 
 }

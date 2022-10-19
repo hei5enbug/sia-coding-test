@@ -6,5 +6,5 @@ import sia.backendtest.dto.RegionRequestDTO
 
 interface RegionService {
     fun insertRegion(regionRequestDTO: RegionRequestDTO): IdResponseDTO
-    fun findAoisByRegionId(id: Int): RegionIntersectResponseDTO
+    fun findByRegionId(id: Int): RegionIntersectResponseDTO
 }
