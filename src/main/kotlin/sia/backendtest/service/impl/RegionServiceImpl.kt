@@ -3,7 +3,7 @@ package sia.backendtest.service.impl
 import org.springframework.stereotype.Service
 import sia.backendtest.dto.AoiResponseDTO
 import sia.backendtest.dto.PointDTO
-import sia.backendtest.dto.RegionIntersectAoisResponseDTO
+import sia.backendtest.dto.RegionIntersectResponseDTO
 import sia.backendtest.dto.RegionRequestDTO
 import sia.backendtest.repository.AoiRepository
 import sia.backendtest.repository.RegionRepository
@@ -21,14 +21,14 @@ class RegionServiceImpl(
         return regionRepository.save(region).id
     }
 
-    override fun findAoisByRegionId(id: Int): RegionIntersectAoisResponseDTO {
+    override fun findAoisByRegionId(id: Int): RegionIntersectResponseDTO {
         val aois = aoiRepository.findByRegionId(id).map { aoi ->
             AoiResponseDTO(
                 aoi.id,
                 aoi.name,
                 aoi.area.coordinates.map { PointDTO(it.x, it.y) })
         }
-        return RegionIntersectAoisResponseDTO(aois)
+        return RegionIntersectResponseDTO(aois)
     }
 
 }

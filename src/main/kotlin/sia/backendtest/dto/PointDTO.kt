@@ -1,7 +1,7 @@
 package sia.backendtest.dto
 
 
-class PointDTO(
+data class PointDTO(
     val x: Double,
     val y: Double
 )

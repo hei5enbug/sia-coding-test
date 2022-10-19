@@ -1,8 +1,8 @@
 package sia.backendtest.dto
 
 
-open class AreaRequestDTO(
-    val name: String,
-    val area: List<PointDTO>
+abstract class AreaRequestDTO(
+    open val name: String,
+    open val area: List<PointDTO>
 )
 

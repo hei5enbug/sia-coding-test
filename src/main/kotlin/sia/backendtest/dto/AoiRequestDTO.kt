@@ -1,5 +1,8 @@
 package sia.backendtest.dto
 
 
-class AoiRequestDTO(name: String, area: List<PointDTO>): AreaRequestDTO(name, area)
+data class AoiRequestDTO(
+    override val name: String,
+    override val area: List<PointDTO>
+) : AreaRequestDTO(name, area)
 
