@@ -8,9 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import sia.backendtest.dto.AoiRequestDTO
-import sia.backendtest.dto.IdResponseDTO
-import sia.backendtest.dto.PointDTO
+import sia.backendtest.dto.*
 import sia.backendtest.entity.Aoi
 import sia.backendtest.repository.AoiRepository
 import sia.backendtest.service.impl.AoiServiceImpl
@@ -30,20 +28,21 @@ internal class AoiServiceTest {
         return null as T
     }
 
+    private val testName = "인천대학교"
+    private val testArea = listOf(
+        PointDTO(126.637633, 37.376078),
+        PointDTO(126.632383, 37.379237),
+        PointDTO(126.628187, 37.375380),
+        PointDTO(126.633852, 37.372120),
+        PointDTO(126.637633, 37.376078),
+    )
+
+
     @Test
     fun insertAoiTest() {
-        val aoiRequestDTO = AoiRequestDTO(
-            name = "인천대학교",
-            area = listOf(
-                PointDTO(126.637633, 37.376078),
-                PointDTO(126.632383, 37.379237),
-                PointDTO(126.628187, 37.375380),
-                PointDTO(126.633852, 37.372120),
-                PointDTO(126.637633, 37.376078),
-            )
-        )
+        val aoiRequestDTO = AoiRequestDTO(name = testName, area = testArea)
         val aoi = Aoi(
-            id = 5,
+            id = 10,
             name = aoiRequestDTO.name,
             area = GeometryConverter().convertPolygon(aoiRequestDTO.area)
         )
@@ -55,19 +54,26 @@ internal class AoiServiceTest {
     }
 
     @Test
-    fun findNearByPoint() {
-        val aoiRequestDTO = AoiRequestDTO(
-            name = "인천대학교",
-            area = listOf(
-                PointDTO(126.637633, 37.376078),
-                PointDTO(126.632383, 37.379237),
-                PointDTO(126.628187, 37.375380),
-                PointDTO(126.633852, 37.372120),
-                PointDTO(126.637633, 37.376078),
-            )
+    fun findByRegionIdTest() {
+        val expected = RegionIntersectResponseDTO(
+            listOf(AoiResponseDTO(id = 10, name = testName, area = testArea))
         )
+        val aois = expected.aois.map {
+            Aoi(id = it.id, name = it.name, area = GeometryConverter().convertPolygon(it.area))
+        }
+        val regionId = 5
+
+        given(aoiRepository.findAllByRegionId(regionId)).willReturn(aois)
+        val result = aoiService.findByRegionId(regionId)
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun findNearByPoint() {
+        val aoiRequestDTO = AoiRequestDTO(name = testName, area = testArea)
         val expected = Aoi(
-            id = 5,
+            id = 10,
             name = aoiRequestDTO.name,
             area = GeometryConverter().convertPolygon(aoiRequestDTO.area)
         )

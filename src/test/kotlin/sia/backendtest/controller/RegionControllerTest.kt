@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import sia.backendtest.dto.*
+import sia.backendtest.service.AoiService
 import sia.backendtest.service.RegionService
 import java.nio.charset.StandardCharsets
 
@@ -20,6 +21,9 @@ internal class RegionControllerTest {
 
     @MockBean
     private lateinit var regionService: RegionService
+
+    @MockBean
+    private lateinit var aoiService: AoiService
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -74,7 +78,7 @@ internal class RegionControllerTest {
             )
         )
         val regionId = 1
-        given(regionService.findByRegionId(regionId)).willReturn(expected)
+        given(aoiService.findByRegionId(regionId)).willReturn(expected)
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/regions/${regionId}/aois/intersects")

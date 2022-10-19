@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import sia.backendtest.dto.AoiRequestDTO
 import sia.backendtest.dto.AoiResponseDTO
 import sia.backendtest.dto.IdResponseDTO
+import sia.backendtest.dto.RegionIntersectResponseDTO
 import sia.backendtest.entity.Aoi
 import sia.backendtest.repository.AoiRepository
 import sia.backendtest.service.AoiService
@@ -15,6 +16,11 @@ class AoiServiceImpl(private val aoiRepository: AoiRepository) : AoiService {
     override fun insertAoi(aoiRequestDTO: AoiRequestDTO): IdResponseDTO {
         val aoi = convertDtoToAoi(aoiRequestDTO)
         return aoiRepository.save(aoi).toIdResponseDto()
+    }
+
+    override fun findByRegionId(id: Int): RegionIntersectResponseDTO {
+        val aois = aoiRepository.findAllByRegionId(id).map { it.toAoiResponseDto() }
+        return RegionIntersectResponseDTO(aois)
     }
 
     override fun findNearByPoint(lat: Double, lon: Double): AoiResponseDTO {

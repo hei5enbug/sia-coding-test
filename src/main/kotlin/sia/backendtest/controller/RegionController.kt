@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RestController
 import sia.backendtest.dto.RegionIntersectResponseDTO
 import sia.backendtest.dto.RegionRequestDTO
 import sia.backendtest.dto.IdResponseDTO
+import sia.backendtest.service.AoiService
 import sia.backendtest.service.RegionService
 
 @RestController
 class RegionController(
     private val regionService: RegionService,
+    private val aoiService: AoiService,
 ) {
 
     @PostMapping("/regions")
@@ -22,7 +24,7 @@ class RegionController(
 
     @GetMapping("/regions/{id}/aois/intersects")
     fun getRegionIntersectedAois(@PathVariable(name = "id") id: Int): RegionIntersectResponseDTO {
-        return regionService.findByRegionId(id)
+        return aoiService.findByRegionId(id)
     }
 
 }
