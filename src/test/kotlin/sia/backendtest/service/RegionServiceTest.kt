@@ -26,7 +26,7 @@ internal class RegionServiceTest {
     private lateinit var regionService: RegionServiceImpl
 
     @Test
-    internal fun insertRegionTest() {
+    fun insertRegionTest() {
         val regionRequestDTO = RegionRequestDTO(
             name = "인천시", area = listOf(
                 PointDTO(126.575759, 37.626045),

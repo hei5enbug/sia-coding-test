@@ -31,6 +31,7 @@ dependencies {
 	implementation("org.postgresql:postgresql:42.5.0")
 	implementation("org.hibernate:hibernate-spatial:5.6.11.Final")
 	implementation("org.locationtech.jts:jts-core:1.18.2")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

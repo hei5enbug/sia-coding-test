@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  dbpostgresql:
+    container_name: sia-postgis
+    image: postgis/postgis
+    networks:
+      - spring-postgis-net
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+  app:
+    container_name: sia-backend-test
+    image: kbm0598/sia-backend-test
+    networks:
+      - spring-postgis-net
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dbpostgresql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://sia-postgis:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+networks:
+  spring-postgis-net:
