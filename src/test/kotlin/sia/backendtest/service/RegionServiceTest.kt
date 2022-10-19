@@ -3,45 +3,80 @@ package sia.backendtest.service
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.GeometryFactory
 import org.mockito.BDDMockito.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import sia.backendtest.model.Region
+import sia.backendtest.dto.AoiResponseDTO
+import sia.backendtest.dto.PointDTO
+import sia.backendtest.dto.RegionIntersectResponseDTO
+import sia.backendtest.dto.RegionRequestDTO
+import sia.backendtest.entity.Aoi
+import sia.backendtest.entity.Region
+import sia.backendtest.repository.AoiRepository
 import sia.backendtest.repository.RegionRepository
 import sia.backendtest.service.impl.RegionServiceImpl
+import sia.backendtest.util.DTOConverter
 
 @ExtendWith(MockitoExtension::class)
 internal class RegionServiceTest {
 
     @Mock
-    lateinit var regionRepository: RegionRepository
+    private lateinit var regionRepository: RegionRepository
+
+    @Mock
+    private lateinit var aoiRepository: AoiRepository
 
     @InjectMocks
-    lateinit var regionService: RegionServiceImpl
+    private lateinit var regionService: RegionServiceImpl
+
 
     @Test
-    internal fun insertRegion() {
-        val region = createRegion()
-        given(regionRepository.save(region)).willReturn(region)
-        val id = regionService.insertRegion(region)
-
-        assertEquals(id, region.id)
-    }
-
-    private fun createRegion(): Region {
-        val coordinates = arrayOf(
-            Coordinate(126.637633, 37.376078),
-            Coordinate(126.632383, 37.379237),
-            Coordinate(126.628187, 37.375380),
-            Coordinate(126.633852, 37.372120),
-            Coordinate(126.637633, 37.376078)
+    internal fun insertRegionTest() {
+        val regionRequestDTO = RegionRequestDTO(
+            name = "인천대학교",
+            area = listOf(
+                PointDTO(126.637633, 37.376078),
+                PointDTO(126.632383, 37.379237),
+                PointDTO(126.628187, 37.375380),
+                PointDTO(126.633852, 37.372120),
+                PointDTO(126.637633, 37.376078),
+            )
         )
-        val geometryFactory = GeometryFactory()
-        val sequence = geometryFactory.coordinateSequenceFactory.create(coordinates)
-        val polygon = geometryFactory.createPolygon(sequence)
-        return Region(id = 10, name = "인천대학교", area = polygon)
+        val region = Region(
+            id = 5,
+            name = regionRequestDTO.name,
+            area = DTOConverter().convertPolygon(regionRequestDTO.area)
+        )
+
+        given(regionRepository.save(any())).willReturn(region)
+        val result = regionService.insertRegion(regionRequestDTO)
+
+        assertEquals(result, region.id)
     }
+
+    @Test
+    internal fun findAoisByRegionIdTest() {
+        val expected = RegionIntersectResponseDTO(
+            listOf(
+                AoiResponseDTO(
+                    id = 2, name = "북한산", area = listOf(
+                        PointDTO(126.637633, 37.376078),
+                        PointDTO(126.632383, 37.379237),
+                        PointDTO(126.628187, 37.375380),
+                        PointDTO(126.633852, 37.372120),
+                        PointDTO(126.637633, 37.376078)
+                    )
+                )
+            )
+        )
+        val aois = expected.aois.map {
+            Aoi(id = it.id, name = it.name, area = DTOConverter().convertPolygon(it.area))
+        }
+
+        given(aoiRepository.findByRegionId(anyInt())).willReturn(aois)
+        val result = regionService.findAoisByRegionId(1)
+        assertEquals(expected, result)
+    }
+
 }
