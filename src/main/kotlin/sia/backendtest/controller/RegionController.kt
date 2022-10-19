@@ -17,8 +17,7 @@ class RegionController(
 
     @PostMapping("/regions")
     fun insertRegion(@RequestBody regionRequestDTO: RegionRequestDTO): IdResponseDTO {
-        val id = regionService.insertRegion(regionRequestDTO)
-        return IdResponseDTO(id)
+        return regionService.insertRegion(regionRequestDTO)
     }
 
     @GetMapping("/regions/{id}/aois/intersects")

@@ -12,9 +12,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import sia.backendtest.dto.*
-import sia.backendtest.entity.Region
 import sia.backendtest.service.RegionService
-import sia.backendtest.util.GeometryConverter
 import java.nio.charset.StandardCharsets
 
 @WebMvcTest(RegionController::class)
@@ -45,26 +43,23 @@ internal class RegionControllerTest {
                 PointDTO(126.637633, 37.376078),
             )
         )
-        val region = Region(
-            id = 3, name = body.name, area = GeometryConverter().convertPolygon(body.area)
-        )
 
-        given(regionService.insertRegion(any())).willReturn(region.id)
-        val response = IdResponseDTO(region.id)
+        val expected = IdResponseDTO(id = 3)
+        given(regionService.insertRegion(any())).willReturn(expected)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/regions").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body))
         ).andExpect(MockMvcResultMatchers.status().isOk).andExpect(
             MockMvcResultMatchers.content().string(
-                objectMapper.writeValueAsString(response)
+                objectMapper.writeValueAsString(expected)
             )
         )
     }
 
     @Test
     fun getRegionIntersectedAoisTest() {
-        val response = RegionIntersectResponseDTO(
+        val expected = RegionIntersectResponseDTO(
             listOf(
                 AoiResponseDTO(
                     id = 1, name = "북한산", area = listOf(
@@ -78,7 +73,7 @@ internal class RegionControllerTest {
             )
         )
         val regionId = 1
-        given(regionService.findAoisByRegionId(regionId)).willReturn(response)
+        given(regionService.findAoisByRegionId(regionId)).willReturn(expected)
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/regions/${regionId}/aois/intersects")
@@ -86,7 +81,7 @@ internal class RegionControllerTest {
         )
             .andExpect(MockMvcResultMatchers.status().isOk).andExpect(
                 MockMvcResultMatchers.content().string(
-                    objectMapper.writeValueAsString(response)
+                    objectMapper.writeValueAsString(expected)
                 )
             )
     }

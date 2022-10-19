@@ -7,10 +7,7 @@ import org.mockito.BDDMockito.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import sia.backendtest.dto.AoiResponseDTO
-import sia.backendtest.dto.PointDTO
-import sia.backendtest.dto.RegionIntersectResponseDTO
-import sia.backendtest.dto.RegionRequestDTO
+import sia.backendtest.dto.*
 import sia.backendtest.entity.Aoi
 import sia.backendtest.entity.Region
 import sia.backendtest.repository.AoiRepository
@@ -52,7 +49,7 @@ internal class RegionServiceTest {
         given(regionRepository.save(any())).willReturn(region)
         val result = regionService.insertRegion(regionRequestDTO)
 
-        assertEquals(result, region.id)
+        assertEquals(IdResponseDTO(region.id), result)
     }
 
     @Test
@@ -73,8 +70,8 @@ internal class RegionServiceTest {
         val aois = expected.aois.map {
             Aoi(id = it.id, name = it.name, area = GeometryConverter().convertPolygon(it.area))
         }
-
         given(aoiRepository.findByRegionId(anyInt())).willReturn(aois)
+
         val result = regionService.findAoisByRegionId(1)
         assertEquals(expected, result)
     }

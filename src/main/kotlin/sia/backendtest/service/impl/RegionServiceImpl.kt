@@ -1,6 +1,7 @@
 package sia.backendtest.service.impl
 
 import org.springframework.stereotype.Service
+import sia.backendtest.dto.IdResponseDTO
 import sia.backendtest.dto.RegionIntersectResponseDTO
 import sia.backendtest.dto.RegionRequestDTO
 import sia.backendtest.entity.Region
@@ -15,13 +16,13 @@ class RegionServiceImpl(
     private val aoiRepository: AoiRepository
 ) : RegionService {
 
-    override fun insertRegion(regionRequestDTO: RegionRequestDTO): Int {
+    override fun insertRegion(regionRequestDTO: RegionRequestDTO): IdResponseDTO {
         val region = convertDtoToRegion(regionRequestDTO)
-        return regionRepository.save(region).id
+        return regionRepository.save(region).toIdResponseDto()
     }
 
     override fun findAoisByRegionId(id: Int): RegionIntersectResponseDTO {
-        val aois = aoiRepository.findByRegionId(id).map { it.toAoiResponseDTO() }
+        val aois = aoiRepository.findByRegionId(id).map { it.toAoiResponseDto() }
         return RegionIntersectResponseDTO(aois)
     }
 

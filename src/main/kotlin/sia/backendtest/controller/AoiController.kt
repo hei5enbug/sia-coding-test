@@ -17,8 +17,7 @@ class AoiController(
 
     @PostMapping("/aois")
     fun postAoi(@RequestBody aoiRequestDTO: AoiRequestDTO): IdResponseDTO {
-        val id = aoiService.insertAoi(aoiRequestDTO)
-        return IdResponseDTO(id)
+        return aoiService.insertAoi(aoiRequestDTO)
     }
 
     @GetMapping("/aois")
