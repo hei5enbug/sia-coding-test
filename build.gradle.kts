@@ -8,6 +8,12 @@ plugins {
 	kotlin("plugin.jpa") version "1.6.21"
 }
 
+
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+}
+
 group = "sia"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -23,6 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.postgresql:postgresql:42.5.0")
+	implementation("org.hibernate:hibernate-spatial:5.6.11.Final")
 	implementation("org.locationtech.jts:jts-core:1.18.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

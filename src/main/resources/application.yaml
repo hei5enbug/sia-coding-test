@@ -4,13 +4,11 @@ spring:
     url:
     username:
     password:
-    show-sql: true
 
   jpa:
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    show_sql: true
     hibernate:
-      ddl-auto: none
-      show_sql: true
+      ddl-auto: validate
     properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.format_sql: true
-
