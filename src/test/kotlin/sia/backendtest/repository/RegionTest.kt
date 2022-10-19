@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import sia.backendtest.dto.PointDTO
 import sia.backendtest.entity.Region
-import sia.backendtest.util.DTOConverter
+import sia.backendtest.util.GeometryConverter
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -28,7 +28,7 @@ internal class RegionTest {
         )
         val region = Region(
             name = "인천대학교",
-            area = DTOConverter().convertPolygon(pointList)
+            area = GeometryConverter().convertPolygon(pointList)
         )
         val savedRegion = regionRepository.save(region)
 

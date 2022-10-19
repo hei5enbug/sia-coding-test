@@ -16,7 +16,7 @@ import sia.backendtest.entity.Region
 import sia.backendtest.repository.AoiRepository
 import sia.backendtest.repository.RegionRepository
 import sia.backendtest.service.impl.RegionServiceImpl
-import sia.backendtest.util.DTOConverter
+import sia.backendtest.util.GeometryConverter
 
 @ExtendWith(MockitoExtension::class)
 internal class RegionServiceTest {
@@ -46,7 +46,7 @@ internal class RegionServiceTest {
         val region = Region(
             id = 5,
             name = regionRequestDTO.name,
-            area = DTOConverter().convertPolygon(regionRequestDTO.area)
+            area = GeometryConverter().convertPolygon(regionRequestDTO.area)
         )
 
         given(regionRepository.save(any())).willReturn(region)
@@ -71,7 +71,7 @@ internal class RegionServiceTest {
             )
         )
         val aois = expected.aois.map {
-            Aoi(id = it.id, name = it.name, area = DTOConverter().convertPolygon(it.area))
+            Aoi(id = it.id, name = it.name, area = GeometryConverter().convertPolygon(it.area))
         }
 
         given(aoiRepository.findByRegionId(anyInt())).willReturn(aois)

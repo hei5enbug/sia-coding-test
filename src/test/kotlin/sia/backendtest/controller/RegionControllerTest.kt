@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import sia.backendtest.dto.*
 import sia.backendtest.entity.Region
 import sia.backendtest.service.RegionService
-import sia.backendtest.util.DTOConverter
+import sia.backendtest.util.GeometryConverter
 import java.nio.charset.StandardCharsets
 
 @WebMvcTest(RegionController::class)
@@ -46,7 +46,7 @@ internal class RegionControllerTest {
             )
         )
         val region = Region(
-            id = 3, name = body.name, area = DTOConverter().convertPolygon(body.area)
+            id = 3, name = body.name, area = GeometryConverter().convertPolygon(body.area)
         )
 
         given(regionService.insertRegion(any())).willReturn(region.id)

@@ -1,14 +1,13 @@
 package sia.backendtest.service.impl
 
 import org.springframework.stereotype.Service
-import sia.backendtest.dto.AoiResponseDTO
-import sia.backendtest.dto.PointDTO
 import sia.backendtest.dto.RegionIntersectResponseDTO
 import sia.backendtest.dto.RegionRequestDTO
+import sia.backendtest.entity.Region
 import sia.backendtest.repository.AoiRepository
 import sia.backendtest.repository.RegionRepository
 import sia.backendtest.service.RegionService
-import sia.backendtest.util.DTOConverter
+import sia.backendtest.util.GeometryConverter
 
 @Service
 class RegionServiceImpl(
@@ -17,18 +16,17 @@ class RegionServiceImpl(
 ) : RegionService {
 
     override fun insertRegion(regionRequestDTO: RegionRequestDTO): Int {
-        val region = DTOConverter().convertRegion(regionRequestDTO)
+        val region = convertDtoToRegion(regionRequestDTO)
         return regionRepository.save(region).id
     }
 
     override fun findAoisByRegionId(id: Int): RegionIntersectResponseDTO {
-        val aois = aoiRepository.findByRegionId(id).map { aoi ->
-            AoiResponseDTO(
-                aoi.id,
-                aoi.name,
-                aoi.area.coordinates.map { PointDTO(it.x, it.y) })
-        }
+        val aois = aoiRepository.findByRegionId(id).map { it.toAoiResponseDTO() }
         return RegionIntersectResponseDTO(aois)
+    }
+
+    private fun convertDtoToRegion(regionDTO: RegionRequestDTO): Region {
+        return Region(name = regionDTO.name, area = GeometryConverter().convertPolygon(regionDTO.area))
     }
 
 }
