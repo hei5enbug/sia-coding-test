@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass
 @MappedSuperclass
 class Area(
     val name: String,
-    @Column(columnDefinition = "geography")
+    @Column(columnDefinition = "geometry")
     val area: Polygon
 ) {
     fun convertPolygonToDto(): List<PointDTO> {
